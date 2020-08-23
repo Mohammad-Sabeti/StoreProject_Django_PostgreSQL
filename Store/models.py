@@ -19,6 +19,13 @@ class Product(models.Model):
         verbose_name_plural = 'کالا'
     ProductName = models.CharField('نام کالا',max_length=50)
     ProductPrice=models.IntegerField('قیمت')
+
+    ProductImage = models.ImageField('تصویر', upload_to='product_images/')
+        # TODO:New Field #
+    ProductStock = models.IntegerField('موجودی کالا')
+    ProductDescription = models.TextField('توضیح مخنصری در مورد کالا')
+
+
     Available=1
     NotAvailable=0
     status_choices=(
@@ -26,7 +33,8 @@ class Product(models.Model):
         (NotAvailable,'موجودی تا چند روز آینده'),
     )
     ProductStatus=models.IntegerField('وضعیت',choices=status_choices)
-
+    def get_price_display(self):
+        return '{} تومان'.format(self.ProductPrice)
 
     def __str__(self):
         return F"{self.ProductName} - {self.ProductPrice}"
