@@ -1,17 +1,49 @@
 from django.db import models
-
+#########################################
+from django.contrib.auth.models import User
 # Create your models here.
+
+# TODO:New Field #
 class Customer(models.Model):
     class Meta:
         verbose_name = 'مشتری '
         verbose_name_plural = 'مشتری'
-    CustomerName=models.CharField('نام',max_length=50)
-    CustomerFamily=models.CharField('نام خانوادگی',max_length=50)
-    CustomerAge=models.IntegerField('سن')
-    Address = models.TextField('آدرس')
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='حساب کاربری')
+    # important fields that are stored in User model:
+    #   first_name, last_name, email, date_joined
+
+
+    MALE = 1
+    FEMALE = 2
+    GENDER_CHOICES = ((MALE, 'مرد'), (FEMALE, 'زن'))
+    gender = models.IntegerField('جنسیت', choices=GENDER_CHOICES, blank=True)
+
+    address = models.TextField('آدرس',blank=True)
+    mobile = models.CharField('تلفن همراه', max_length=11)
+    birth_date = models.DateField('تاریخ تولد', null=True, blank=True)
+    profile_image = models.ImageField('تصویر', upload_to='profile_images/', null=True, blank=True)
+    balance = models.IntegerField('اعتبار', default=0)
+
 
     def __str__(self):
-        return F"{self.CustomerName} - {self.CustomerFamily} - {self.CustomerAge}"
+        return self.user.get_full_name()
+
+    def get_balance_display(self):
+        return '{} تومان'.format(self.balance)
+
+    # behaviors
+    def deposit(self, amount):
+        self.balance += amount
+        self.save()
+
+    def spend(self, amount):
+        if self.balance < amount:
+            return False
+        self.balance -= amount
+        self.save()
+        return True
+
 
 class Product(models.Model):
     class Meta:
@@ -21,7 +53,7 @@ class Product(models.Model):
     ProductPrice=models.IntegerField('قیمت')
 
     ProductImage = models.ImageField('تصویر', upload_to='product_images/')
-        # TODO:New Field #
+    # TODO:New Field #
     ProductStock = models.IntegerField('موجودی کالا')
     ProductDescription = models.TextField('توضیح مخنصری در مورد کالا')
 
@@ -39,14 +71,54 @@ class Product(models.Model):
     def __str__(self):
         return F"{self.ProductName} - {self.ProductPrice}"
 
+
+    def reserve_stock(self, sell_count):
+        assert isinstance(sell_count, int) and sell_count > 0, 'Number of seats should be a positive integer'
+        assert self.ProductStatus == Product.Available, 'Sale is not open'
+        assert self.ProductStock >= sell_count, 'Not enough free seats'
+        self.ProductStock -= sell_count
+        if self.ProductStock == 0:
+            self.ProductStatus = Product.NotAvailable
+        self.save()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class OrderApp(models.Model):
     class Meta:
         verbose_name = 'سفارشات '
         verbose_name_plural = 'سفارشات'
-    customer = models.ForeignKey('Customer',on_delete=models.PROTECT,verbose_name='مشتری')
-    product = models.ForeignKey('Product',on_delete=models.PROTECT,verbose_name='کالا')
-    OrderDate=models.DateTimeField('تاریخ ثبت سفارش')
-
+    product = models.ForeignKey('Product', on_delete=models.PROTECT, verbose_name='کالا')
+    customer = models.ForeignKey('Customer', on_delete=models.PROTECT, verbose_name='خریدار')
+    sell_count = models.IntegerField('تعداد خرید')
+    order_time = models.DateTimeField('تاریخ ثبت سفارش', auto_now_add=True)
 
     def __str__(self):
-        return F"{self.customer} - {self.product} - {self.OrderDate}"
+        return "{} سفارش به نام {} برای کالای {}".format(self.sell_count, self.customer, self.product)
+
+
+
+
+#######################################################################################################################
+class Payment(models.Model):
+    class Meta:
+        verbose_name = 'پرداخت'
+        verbose_name_plural = 'پرداخت'
+
+    customer = models.ForeignKey('Customer', on_delete=models.CASCADE, verbose_name='کاربر')
+    amount = models.PositiveIntegerField('مبلغ')
+    transaction_time = models.DateTimeField('زمان تراکنش', auto_now_add=True)
+    transaction_code = models.CharField('رسید تراکنش', max_length=30)
+
+    def __str__(self):
+        return '{} تومان افزایش اعتبار برای {}'.format(self.amount, self.customer)

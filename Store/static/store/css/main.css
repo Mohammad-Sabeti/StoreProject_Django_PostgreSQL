@@ -10,6 +10,7 @@ body {
     font-size: 14px !important;
     margin: 0;
     background-color: #e6e6e6;
+    width: auto;
 }
 
 #container {
@@ -19,14 +20,16 @@ body {
 }
 
 #header {
-    background-color: #860002;
+    background-color: #00b3b3;
     color: #ffffff;
     height: 100px;
+        width: auto;
 }
 
 #header > h2 {
     font-size: 2em;
     margin: 0;
+        width: auto;
 }
 
 #toolbar {
@@ -54,9 +57,10 @@ body {
 }
 
 #footer {
-    background-color: #860002;
+    background-color: #00b3b3;
     color: #ffffff;
     height: 100px;
+    width: auto;
 }
 
 a.social-media-icon {

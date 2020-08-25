@@ -12,13 +12,13 @@
 
 {% block main_content %}
     <div class="row">
-        <div class="col py-3">
+        <div class="col py-4 px-4">
             {% if products %}
 
-                <div class="row px-2">
+                <div class="row px-3">
                     {% for product in products %}
                         <div class="col-3 px-2 py-2">
-                            <a href="#"
+                            <a href="{% url "Store:product_details" product_id=product.pk %}"
                                class="showtime-box btn
                                 {% if product.ProductStatus != product.Available %}
                                  disabled btn-outline-secondary
@@ -34,7 +34,7 @@
                                 <br/>
 
                                 <span class="showtime-status badge
-                                    {% if product.status == product.Available %}
+                                    {% if product.ProductStatus == product.Available %}
                                         badge-success
                                     {% else %}
                                         badge-warning
@@ -60,7 +60,7 @@
                 </div>
             {% else %}
                 <div class="alert alert-danger">
-                    در حال حاضر هیچ سانسی برای نمایش وجود ندارد.
+                    در حال حاضر هیچ کالایی برای نمایش وجود ندارد.
                 </div>
             {% endif %}
         </div>
