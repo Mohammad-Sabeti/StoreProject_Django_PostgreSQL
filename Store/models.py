@@ -30,7 +30,7 @@ class Customer(models.Model):
         return self.user.get_full_name()
 
     def get_balance_display(self):
-        return '{} تومان'.format(self.balance)
+        return '{:,} تومان'.format(self.balance)
 
     # behaviors
     def deposit(self, amount):
@@ -66,7 +66,7 @@ class Product(models.Model):
     )
     ProductStatus=models.IntegerField('وضعیت',choices=status_choices)
     def get_price_display(self):
-        return '{} تومان'.format(self.ProductPrice)
+        return '{:,} تومان'.format(self.ProductPrice)
 
     def __str__(self):
         return F"{self.ProductName} - {self.ProductPrice}"
@@ -103,6 +103,8 @@ class OrderApp(models.Model):
     sell_count = models.IntegerField('تعداد خرید')
     order_time = models.DateTimeField('تاریخ ثبت سفارش', auto_now_add=True)
 
+
+
     def __str__(self):
         return "{} سفارش به نام {} برای کالای {}".format(self.sell_count, self.customer, self.product)
 
@@ -119,6 +121,9 @@ class Payment(models.Model):
     amount = models.PositiveIntegerField('مبلغ')
     transaction_time = models.DateTimeField('زمان تراکنش', auto_now_add=True)
     transaction_code = models.CharField('رسید تراکنش', max_length=30)
+    def get_amount_display(self):
+        return '{:,} تومان'.format(self.amount)
+
 
     def __str__(self):
-        return '{} تومان افزایش اعتبار برای {}'.format(self.amount, self.customer)
+        return '{:20,} تومان افزایش اعتبار برای {}'.format(self.amount, self.customer)

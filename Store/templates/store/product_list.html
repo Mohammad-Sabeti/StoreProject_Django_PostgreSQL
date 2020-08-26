@@ -21,7 +21,7 @@
                             <a href="{% url "Store:product_details" product_id=product.pk %}"
                                class="showtime-box btn
                                 {% if product.ProductStatus != product.Available %}
-                                 disabled btn-outline-secondary
+                                  btn-secondary
                                 {% else %}
                                  btn-outline-dark
                                 {% endif %}">

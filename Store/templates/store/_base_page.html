@@ -19,11 +19,23 @@
 
     <div class="container-fluid ">
         <div class="row align-items-center  " id="header">
-            <div class="col text-center">
+<div class="col-12 text-left">
+    <div>
+        <i class="far fa-calendar-alt"></i>
+
+        <small>
+            امروز :
+            {{ date_now|to_jalali:'%A %m/%d ساعت %H:%M' }}
+        </small>
+    </div>
+</div>
+            <div class="col-12 text-center align-text-top">
+
                 <h2>
                     فروشگاه اینترنتی
                 </h2>
             </div>
+
         </div>
         <div class="row align-items-center " id="toolbar">
             <div class="col-6 container-fluid ">
@@ -49,11 +61,13 @@
                                 {{ user.get_full_name }}
                             </a>
                             <div class="dropdown-menu text-right" aria-labelledby="user-button" dir="rtl">
-<i class="fas fa-wallet"></i>
-                                اعتبار:
-                                {{ user.customer.balance }}
-                                تومان
-                            </span>
+                                <i class="fas fa-wallet"></i>
+                                <small>
+                                    اعتبار:
+                                    {{ user.customer.get_balance_display }}
+
+                                </small>
+                                </span>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="{% url "Store:profile_details" %}">
                                     <i class="fas fa-user-tie"></i>

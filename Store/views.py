@@ -1,4 +1,8 @@
-from django.shortcuts import render
+
+from datetime import datetime
+
+from django.template.loader import render_to_string
+
 from .forms import *
 from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.decorators import login_required
@@ -10,14 +14,17 @@ from django.urls import reverse
 def product_list(request):
     products = Product.objects.all()
     context = {
-        'products': products
+        'products': products,
+        'date_now':datetime.now()
     }
     return render(request, 'store/product_list.html', context)
 
 def product_details(request, product_id):
     product = Product.objects.get(pk=product_id)
+
     context = {
-        'product': product
+        'product': product,
+        'date_now': datetime.now()
     }
 
 
@@ -40,16 +47,18 @@ def product_details(request, product_id):
 
 def orderapp_list(request):
     orderapps = OrderApp.objects.filter(customer_id=request.user.customer).order_by('-order_time')
-
     context = {
         'orderapps': orderapps,
+        'date_now': datetime.now()
+
     }
     return render(request, 'store/orderapp_list.html', context)
 
 def orderapp_details(request, orderapp_id):
     orderapp = OrderApp.objects.get(pk=orderapp_id)
     context = {
-        'orderapp': orderapp
+        'orderapp': orderapp,
+        'date_now': datetime.now()
     }
     return render(request, 'store/orderapp_details.html', context)
 
@@ -72,10 +81,12 @@ def login_view(request):
             # undefined user or wrong password
             context = {
                 'username': username,
+                'date_now': datetime.now(),
                 'error': 'کاربری با این مشخصات یافت نشد'
+
             }
     else:
-        context = {}
+        context = {'date_now': datetime.now()}
     return render(request, 'user/login.html', context)
 
 
@@ -89,7 +100,8 @@ def logout_view(request):
 def profile_details(request):
     customer = request.user.customer
     context = {
-        'customer': customer
+        'customer': customer,
+        'date_now': datetime.now()
     }
     return render(request, 'user/profile_details.html', context)
 
@@ -98,7 +110,8 @@ def profile_details(request):
 def payment_list(request):
     payments = Payment.objects.filter(customer=request.user.customer).order_by('-transaction_time')
     context = {
-        'payments': payments
+        'payments': payments,
+        'date_now': datetime.now()
     }
     return render(request, 'user/payment_list.html', context)
 
@@ -116,7 +129,8 @@ def payment_create(request):
     else:
         payment_form = PaymentForm()
     context = {
-        'payment_form': payment_form
+        'payment_form': payment_form,
+        'date_now': datetime.now()
     }
     return render(request, 'user/payment_create.html', context)
 
@@ -135,6 +149,7 @@ def profile_edit(request):
         profile_form = ProfileForm(instance=request.user.customer)
     context = {
         'user_form': user_form,
-        'profile_form': profile_form
+        'profile_form': profile_form,
+        'date_now': datetime.now()
     }
     return render(request, 'user/profile_edit.html', context)
