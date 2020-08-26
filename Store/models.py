@@ -1,7 +1,7 @@
 from django.db import models
 #########################################
 from django.contrib.auth.models import User
-# Create your models here.
+
 
 # TODO:New Field #
 class Customer(models.Model):
@@ -45,6 +45,7 @@ class Customer(models.Model):
         return True
 
 
+
 class Product(models.Model):
     class Meta:
         verbose_name = 'کالا'
@@ -73,24 +74,13 @@ class Product(models.Model):
 
 
     def reserve_stock(self, sell_count):
-        assert isinstance(sell_count, int) and sell_count > 0, 'Number of seats should be a positive integer'
-        assert self.ProductStatus == Product.Available, 'Sale is not open'
-        assert self.ProductStock >= sell_count, 'Not enough free seats'
+        assert isinstance(sell_count, int) and sell_count > 0, 'Number of sells should be a positive integer'
+        assert self.ProductStatus == Product.Available, 'Product is not Available'
+        assert self.ProductStock >= sell_count, 'Not enough ProductStock'
         self.ProductStock -= sell_count
         if self.ProductStock == 0:
             self.ProductStatus = Product.NotAvailable
         self.save()
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -109,8 +99,6 @@ class OrderApp(models.Model):
         return "{} سفارش به نام {} برای کالای {}".format(self.sell_count, self.customer, self.product)
 
 
-
-
 #######################################################################################################################
 class Payment(models.Model):
     class Meta:
@@ -123,6 +111,7 @@ class Payment(models.Model):
     transaction_code = models.CharField('رسید تراکنش', max_length=30)
     def get_amount_display(self):
         return '{:,} تومان'.format(self.amount)
+
 
 
     def __str__(self):

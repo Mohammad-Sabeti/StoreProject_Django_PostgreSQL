@@ -38,10 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    ######################
     'jalali_date',
     'Store.apps.StoreConfig',
 ]
 
+######################
 # defaults
 JALALI_DATE_DEFAULTS = {
    'Strftime': {

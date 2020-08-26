@@ -117,9 +117,10 @@ ul.item-list > li > a {
     font-size: 0.9em;
 }
 
-.showtime-box .showtime-status {
+.product-box .product-status {
     font-size: 0.8em;
     font-weight: normal;
+    size: 550px;
 }
 
 .search-bar {
